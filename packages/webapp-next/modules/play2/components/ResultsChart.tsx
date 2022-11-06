@@ -47,6 +47,16 @@ const renderChart = (
       ],
     },
     options: {
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: (tooltipItem): any => {
+              console.log(tooltipItem);
+              return tooltipItem;
+            },
+          },
+        },
+      },
       responsive: true,
       maintainAspectRatio: false,
       scales: {
@@ -54,10 +64,9 @@ const renderChart = (
           beginAtZero: true,
         },
       },
-      plugins: {
-        tooltip: {
-          enabled: true,
-        },
+      interaction: {
+        intersect: false,
+        mode: "index",
       },
     },
   });
@@ -72,7 +81,6 @@ export default function ResultsChart() {
       chart?.destroy();
     };
   }, [chartWPMData]);
-
   return (
     <div className="flex rounded-xl flex-col bg-dark-lake m-2">
       <div className="flex flex-row">
