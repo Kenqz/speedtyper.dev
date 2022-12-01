@@ -15,9 +15,8 @@ export function CodeArea({
 }: CodeAreaProps) {
   return (
     <div
-      className="text-faded-gray flex-shrink tracking-wider rounded-xl p-4 text-2xl w-full"
+      className="bg-dark-lake text-faded-gray flex-shrink tracking-wider rounded-xl p-4 text-2xl w-full"
       style={{
-        backgroundColor: "black",
         height: "420px",
         fontFamily: "Fira Code",
         fontWeight: "normal",
@@ -25,7 +24,7 @@ export function CodeArea({
     >
       {!focused && (
         <div className="absolute flex justify-center items-center w-full h-full">
-          Click to focus
+          Click or press any key to focus
         </div>
       )}
 

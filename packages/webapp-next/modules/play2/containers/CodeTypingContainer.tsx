@@ -10,11 +10,18 @@ import { IncorrectChars } from "../components/IncorrectChars";
 import { UntypedChars } from "../components/UntypedChars";
 import { useEffect, useState, useCallback, MouseEvent } from "react";
 import { useIsPlaying } from "../../../common/hooks/useIsPlaying";
+import { useKeyMap } from "../../../hooks/useKeyMap";
 
 interface CodeTypingContainerProps {
   filePath: string;
   language: string;
 }
+
+const triggerKeys = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*() ".split("");
+
+const CODE_INPUT_BLUR_DEBOUNCE_MS = 1000;
+
+let trulyFocusedCodeInput = true;
 
 export function CodeTypingContainer({
   filePath,
@@ -22,12 +29,21 @@ export function CodeTypingContainer({
 }: CodeTypingContainerProps) {
   useCodeStore((state) => state.code);
   const isPlaying = useIsPlaying();
+  const code = useCodeStore((state) => state.code);
   const start = useCodeStore((state) => state.start);
   const index = useCodeStore((state) => state.index);
-  const char = useCodeStore((state) => state.currentChar)();
-  const [rect, currentNodeRef] = useNodeRect<HTMLSpanElement>(char);
+  const [rect, currentNodeRef] = useNodeRect<HTMLSpanElement>(index.toString());
   const [inputRef, triggerFocus] = useFocusRef<HTMLTextAreaElement>();
   const [focused, setFocused] = useState(true);
+
+  useKeyMap(!focused, triggerKeys, () => {
+    triggerFocus();
+    setFocused(true);
+  });
+
+  useEffect(() => {
+    triggerFocus();
+  }, [code, triggerFocus]);
 
   useEffect(() => {
     if (!isPlaying && index > 0) {
@@ -35,9 +51,19 @@ export function CodeTypingContainer({
     }
   }, [index, isPlaying, start]);
 
-  const onFocus = useCallback(() => setFocused(true), [setFocused]);
+  const onFocus = useCallback(() => {
+    trulyFocusedCodeInput = true;
+    setFocused(true);
+  }, [setFocused]);
 
-  const onBlur = useCallback(() => setFocused(false), [setFocused]);
+  const onBlur = useCallback(() => {
+    trulyFocusedCodeInput = false;
+    setTimeout(() => {
+      if (!trulyFocusedCodeInput) {
+        setFocused(false);
+      }
+    }, CODE_INPUT_BLUR_DEBOUNCE_MS);
+  }, [setFocused]);
 
   // onBlur gets triggered when onFocus is also called more than once
   // which caused a flicker when you repeatedly click the code area

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Challenge } from 'src/challenges/entities/challenge.entity';
 import { ChallengeService } from 'src/challenges/services/challenge.service';
+import { LiteralService } from 'src/challenges/services/literal.service';
 import { User } from 'src/users/entities/user.entity';
 import { Race } from './race.service';
 
@@ -8,19 +8,33 @@ import { Race } from './race.service';
 export class RaceManager {
   private races: Record<string, Race> = {};
 
-  constructor(private challengeService: ChallengeService) {}
+  constructor(
+    private challengeService: ChallengeService,
+    private literalsService: LiteralService,
+  ) {}
 
   async create(user: User): Promise<Race> {
     const challenge = await this.challengeService.getRandom();
-    const race = new Race(user, challenge);
+    const literals = this.literalsService.calculateLiterals(challenge.content);
+    const race = new Race(user, challenge, literals);
     this.races[race.id] = race;
     return race;
   }
 
-  async refresh(id: string): Promise<Challenge> {
+  async refresh(id: string): Promise<Race> {
     const challenge = await this.challengeService.getRandom();
-    this.races[id].challenge = challenge;
-    return challenge;
+    const literals = this.literalsService.calculateLiterals(challenge.content);
+    const race = this.races[id];
+    race.challenge = challenge;
+    race.literals = literals;
+    race.resetProgress(literals);
+    return race;
+  }
+
+  getRace(id: string): Race {
+    const race = this.races[id];
+    if (!race) throw new RaceDoesNotExist(id);
+    return race;
   }
 
   join(user: User, raceId: string): Race | null {
@@ -33,7 +47,7 @@ export class RaceManager {
     // preventing an infinite loop
     // TODO: this should be handled better in the future
     if (!race) return null;
-    race.addMember(user);
+    race.addMember(user, race.literals);
     return race;
   }
 
