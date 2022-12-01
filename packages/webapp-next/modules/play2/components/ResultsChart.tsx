@@ -32,7 +32,7 @@ const renderChart = (
     seconds++;
   }
   return new Chart(ctx, {
-    type: "line",
+    type: "bar",
     data: {
       labels,
       datasets: [
@@ -41,8 +41,6 @@ const renderChart = (
           data,
           backgroundColor: "#d6bcfa",
           borderColor: "#d6bcfa",
-          tension: 0.4,
-          fill: true,
         },
       ],
     },
@@ -54,7 +52,7 @@ const renderChart = (
           intersect: true,
           // callback doesn't run?
           callbacks: {
-            title: () => "Title",
+            title: (): any => console.log("Title"),
           },
         },
       },
@@ -78,9 +76,7 @@ export default function ResultsChart() {
   const chartWPMData = useCodeStore((state) => state.getChartWPM)();
   useEffect(() => {
     const chart = renderChart(chartRef, chartWPMData);
-    return () => {
-      chart?.destroy();
-    };
+    return () => chart?.destroy();
   }, [chartWPMData]);
   return (
     <div className="flex rounded-xl flex-col bg-dark-lake m-2">
