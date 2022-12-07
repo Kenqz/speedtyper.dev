@@ -159,11 +159,12 @@ const IndexPage = () => {
               <div className="flex flex-col lg:flex-row flex-grow mx-12 my-2">
                 {["averagewpm", "topwpm", "gamecount"].map((badge, i) => {
                   return (
-                    <img
+                    <Image
                       key={i}
                       className="pr-4 h-6 my-2 lg:my-0"
                       style={{ width: "240px" }}
                       src={`${serverUrl}/users/${user?.username}/badges/${badge}`}
+                      alt="user data"
                     />
                   );
                 })}

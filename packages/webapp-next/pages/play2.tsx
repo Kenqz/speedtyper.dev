@@ -44,7 +44,7 @@ function Play2Page(_: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   return (
     <>
-      <>
+      <div className="sm:m-0 m-8">
         <PlayHeader />
         <AnimatePresence>
           <motion.div
@@ -74,7 +74,7 @@ function Play2Page(_: InferGetServerSidePropsType<typeof getServerSideProps>) {
           </motion.div>
         </AnimatePresence>
         <PlayFooter game={game} challenge={challenge} />
-      </>
+      </div>
       <ToastContainer />
     </>
   );

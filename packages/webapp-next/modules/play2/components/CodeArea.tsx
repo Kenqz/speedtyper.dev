@@ -23,7 +23,7 @@ export function CodeArea({
       }}
     >
       {!focused && (
-        <div className="absolute flex justify-center items-center w-full h-full">
+        <div className="absolute flex justify-center items-center w-full h-full text-sm sm:text-2xl ">
           Click or press any key to focus
         </div>
       )}
@@ -44,8 +44,10 @@ function CodeAreaHeader({ filePath }: { filePath: string }) {
         <div className="w-2.5 h-2.5 bg-slate-600 rounded-full" />
         <div className="w-2.5 h-2.5 bg-slate-600 rounded-full" />
       </div>
-      <div className="flex items-start justify-center flex-row w-full h-6">
-        <span className="italic text-base opacity-80">{filePath}</span>
+      <div className="flex items-start justify-center md:flex-row flex-col w-full h-6">
+        <span className="italic text-base opacity-80 mt-6 md:m-0">
+          {filePath}
+        </span>
       </div>
     </div>
   );

@@ -25,7 +25,7 @@ interface ProgressProps {
 export function Progress({ progress, word }: ProgressProps) {
   return (
     <div
-      className="w-full bg-white rounded-lg flex items-center"
+      className="w-full bg-white rounded-lg flex sm:flex items-center "
       style={{
         height: "4px",
       }}
